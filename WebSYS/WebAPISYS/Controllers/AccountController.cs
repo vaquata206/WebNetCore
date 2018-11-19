@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPISYS.Dto;
 using WebAPISYS.Services.Interfaces;
@@ -33,13 +30,48 @@ namespace WebAPISYS.Controllers
         /// <summary>
         /// API login
         /// </summary>
-        /// <param name="uservm">User viewmodel</param>
+        /// <param name="loginModel">A viewmodel contain user's info to login the page. For example: username, passwork</param>
         /// <returns>A action result of the api</returns>
         [HttpPost]
         [Route("/login")]
-        public IActionResult Login(UserVM uservm)
+        public IActionResult Login(LoginModel loginModel)
         {
-            return this.Ok();
+            try
+            {
+                IActionResult response = Unauthorized();
+
+                // Validate the view model
+                if (ModelState.IsValid)
+                {
+                    var token = this.accountService.Authenticate(loginModel.UserName, loginModel.PassWord);
+                    response = this.Ok(token);
+                }
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Logout the current user
+        /// </summary>
+        /// <returns>A action result</returns>
+        [Authorize]
+        [HttpGet]
+        [Route("/logout")]
+        public IActionResult Logout()
+        {
+            try
+            {
+                return this.Ok();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

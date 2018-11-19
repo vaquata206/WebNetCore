@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPISYS", "WebAPISYS\WebAPISYS.csproj", "{BA855962-8883-48DF-A825-D40289BD67E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPISYS.Services", "WebAPISYS.Services\WebAPISYS.Services.csproj", "{778B26B7-435C-4CAD-94B5-6CD94A25057A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPISYS.Services", "WebAPISYS.Services\WebAPISYS.Services.csproj", "{778B26B7-435C-4CAD-94B5-6CD94A25057A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPISYS.Entities", "WebAPISYS.Entities\WebAPISYS.Entities.csproj", "{9AFF266A-9277-4E1C-918C-F20F05AB9A15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{778B26B7-435C-4CAD-94B5-6CD94A25057A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{778B26B7-435C-4CAD-94B5-6CD94A25057A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{778B26B7-435C-4CAD-94B5-6CD94A25057A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AFF266A-9277-4E1C-918C-F20F05AB9A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AFF266A-9277-4E1C-918C-F20F05AB9A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AFF266A-9277-4E1C-918C-F20F05AB9A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AFF266A-9277-4E1C-918C-F20F05AB9A15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

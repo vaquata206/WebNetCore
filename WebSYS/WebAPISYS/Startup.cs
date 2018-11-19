@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Text;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using WebAPISYS.Services.Implements;
 using WebAPISYS.Services.Interfaces;
@@ -71,6 +70,35 @@ namespace WebAPISYS
 
                 // ... and tell Swagger to use those XML comments.
                 c.IncludeXmlComments(xmlPath);
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme { In = "header", Description = "Please enter JWT with Bearer into field", Name = "Authorization", Type = "apiKey" });
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                {
+                    { "Bearer", Enumerable.Empty<string>() },
+                });
+            });
+
+            // Add JwtBearer to authentication
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    // có validate Server tạo JWT không ?
+                    ValidateIssuer = false, 
+                    ValidateAudience = false,
+
+                    // có validate expire time hay không ?
+                    ValidateLifetime = true, 
+                    ValidateIssuerSigningKey = true,
+
+                    // ValidIssuer = Configuration["Jwt:Issuer"],
+                    // ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
             });
 
             // Create the container builder.
@@ -87,6 +115,7 @@ namespace WebAPISYS
             // in the ServiceCollection. Mix and match as needed.
             builder.Populate(services);
             builder.RegisterType<AccountService>().As<IAccountService>();
+            builder.Register(c => this.Configuration).As<IConfigurationRoot>().SingleInstance();
             this.ApplicationContainer = builder.Build();
 
             // Create the IServiceProvider based on the container.
@@ -108,6 +137,8 @@ namespace WebAPISYS
         {
             loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseAuthentication();
 
             app.UseMvc();
 
