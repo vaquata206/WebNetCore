@@ -101,12 +101,13 @@ namespace WebAPISYS
                 };
             });
 
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
             // Create the container builder.
             var builder = new ContainerBuilder();
 
             // Register dependencies, populate the services from
             // the collection, and build the container.
-            //
             // Note that Populate is basically a foreach to add things
             // into Autofac that are in the collection. If you register
             // things in Autofac BEFORE Populate then the stuff in the
@@ -116,6 +117,7 @@ namespace WebAPISYS
             builder.Populate(services);
             builder.RegisterType<AccountService>().As<IAccountService>();
             builder.Register(c => this.Configuration).As<IConfigurationRoot>().SingleInstance();
+            builder.Register(c => logger).As<NLog.ILogger>().SingleInstance();
             this.ApplicationContainer = builder.Build();
 
             // Create the IServiceProvider based on the container.

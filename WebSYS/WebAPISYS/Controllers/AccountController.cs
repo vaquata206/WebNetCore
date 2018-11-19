@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 using WebAPISYS.Dto;
 using WebAPISYS.Services.Interfaces;
 
@@ -14,6 +15,11 @@ namespace WebAPISYS.Controllers
     public class AccountController : ControllerBase
     {
         /// <summary>
+        /// Logger interface
+        /// </summary>
+        private readonly ILogger logger;
+
+        /// <summary>
         /// Account service interface
         /// </summary>
         private IAccountService accountService;
@@ -21,10 +27,12 @@ namespace WebAPISYS.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
         /// </summary>
-        /// <param name="accountService">account service</param>
-        public AccountController(IAccountService accountService)
+        /// <param name="accountService">Account service</param>
+        /// <param name="logger">The logger</param>
+        public AccountController(IAccountService accountService, ILogger logger)
         {
             this.accountService = accountService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -38,6 +46,7 @@ namespace WebAPISYS.Controllers
         {
             try
             {
+                this.logger.Error("Index page says hello");
                 IActionResult response = Unauthorized();
 
                 // Validate the view model
