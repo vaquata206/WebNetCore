@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,33 +21,62 @@ namespace WebClient
     public class Startup
     {
         /// <summary>
-        /// A contrustor
+        /// Initializes a new instance of the <see cref="Startup"/> class.
         /// </summary>
-        /// <param name="configuration">The configuration</param>
-        public Startup(IConfiguration configuration)
+        /// <param name="env">The IHosting Evironment</param>
+        public Startup(IHostingEnvironment env)
         {
-            this.Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile(string.Format("appsettings.{0}.json", env.EnvironmentName), optional: true)
+                .AddEnvironmentVariables();
+            this.Configuration = builder.Build();
         }
+
+        /// <summary>
+        /// Application container
+        /// </summary>
+        public IContainer ApplicationContainer { get; private set; }
 
         /// <summary>
         /// The configuration
         /// </summary>
-        public IConfiguration Configuration { get; }
+        public IConfigurationRoot Configuration { get; private set; }
 
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.
         /// </summary>
         /// <param name="services">Service collection</param>
-        public void ConfigureServices(IServiceCollection services)
+        /// <returns>Service provider</returns>
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                // Redirect to path when unathorized. For example "/login"
+                options.LoginPath = "/login";
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnSignedIn = context =>
+                    {
+                        var a = context.HttpContext.Request.Method;
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+
+            var builder = new ContainerBuilder();
+
+            builder.Populate(services);
+            builder.Register(c => logger).As<NLog.ILogger>().SingleInstance();
+            this.ApplicationContainer = builder.Build();
+
+            // Create the IServiceProvider based on the container.
+            return new AutofacServiceProvider(this.ApplicationContainer);
         }
 
         /// <summary>
@@ -67,6 +99,8 @@ namespace WebClient
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
