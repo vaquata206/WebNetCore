@@ -46,7 +46,6 @@ namespace WebAPISYS.Controllers
         {
             try
             {
-                this.logger.Error("Index page says hello");
                 IActionResult response = Unauthorized();
 
                 // Validate the view model
@@ -58,8 +57,9 @@ namespace WebAPISYS.Controllers
 
                 return response;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                this.logger.Error(ex);
                 throw;
             }
         }
