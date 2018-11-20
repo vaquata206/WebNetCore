@@ -328,3 +328,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+WebClient/WebClient/wwwroot/bower_components/
+WebClient/WebClient/wwwroot/dist/
+WebClient/WebClient/wwwroot/plugins/

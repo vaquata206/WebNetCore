@@ -24,9 +24,6 @@
     <Content Update="Views\Account\Contact.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Account\Index.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
     <Content Update="Views\Account\Privacy.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
