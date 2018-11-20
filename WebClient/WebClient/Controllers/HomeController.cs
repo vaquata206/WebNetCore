@@ -8,36 +8,62 @@ using WebClient.Models;
 
 namespace WebClient.Controllers
 {
+    /// <summary>
+    /// Home controller
+    /// </summary>
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Action: Home/
+        /// </summary>
+        /// <returns>Index page</returns>
         public IActionResult Index()
         {
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// Action: Home/about
+        /// </summary>
+        /// <returns>About page</returns>
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
+            this.ViewData["Message"] = "Your application description page.";
 
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// Action: Home/contact
+        /// </summary>
+        /// <returns>Contact page</returns>
         public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
+            this.ViewData["Message"] = "Your contact page.";
 
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// Action: Home/privacy
+        /// </summary>
+        /// <returns>Privacy page</returns>
         public IActionResult Privacy()
         {
-            return View();
+            return this.View();
         }
 
+        /// <summary>
+        /// Action: Home/error
+        /// </summary>
+        /// <returns>Error page</returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return this.View(new ErrorViewModel
+            {
+                RequestId = (Activity.Current == null) ? HttpContext.TraceIdentifier : Activity.Current.Id
+            });
         }
     }
 }

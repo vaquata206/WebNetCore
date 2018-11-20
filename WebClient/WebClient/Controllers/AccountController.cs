@@ -6,12 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebClient.Controllers
 {
+    /// <summary>
+    /// Account controller
+    /// </summary>
     public class AccountController : Controller
     {
+        /// <summary>
+        /// Action login
+        /// </summary>
+        /// <returns>The login page</returns>
         [HttpGet("/login")]
         public IActionResult Index()
         {
-            return View();
+            return this.View();
         }
     }
 }
