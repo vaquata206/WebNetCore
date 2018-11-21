@@ -5,7 +5,9 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 using WebClient.Models;
 using WebClient.Services.Interfaces;
 
@@ -22,12 +24,19 @@ namespace WebClient.Controllers
         private IAccountService accountService;
 
         /// <summary>
+        /// The logger
+        /// </summary>
+        private ILogger logger;
+
+        /// <summary>
         /// A contrustor
         /// </summary>
         /// <param name="accountService">account service</param>
-        public AccountController(IAccountService accountService)
+        /// <param name="logger">The logger</param>
+        public AccountController(IAccountService accountService, ILogger logger)
         {
             this.accountService = accountService;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -88,8 +97,21 @@ namespace WebClient.Controllers
             }
             catch (Exception ex)
             {
+                this.logger.Error(ex);
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// Action logout
+        /// </summary>
+        /// <returns>Redirect to login page</returns>
+        [Authorize]
+        [HttpGet("/logout")]
+        public async Task<IActionResult> LogoutAsync()
+        {
+            await HttpContext.SignOutAsync();
+            return this.Redirect("/login");
         }
     }
 }

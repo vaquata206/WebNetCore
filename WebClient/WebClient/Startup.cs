@@ -79,9 +79,12 @@ namespace WebClient
             var builder = new ContainerBuilder();
 
             builder.Populate(services);
+            // Resgister Services
             builder.RegisterType<AccountService>().As<IAccountService>();
+
+            // Register Repositories
             builder.RegisterType<AccountRepository>().As<IAccountRepository>();
-            builder.Register(c => this.Configuration).As<IConfigurationRoot>();
+
             builder.Register(c => logger).As<NLog.ILogger>().SingleInstance();
             this.ApplicationContainer = builder.Build();
 

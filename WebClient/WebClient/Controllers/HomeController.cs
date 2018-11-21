@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 using WebClient.Models;
 
 namespace WebClient.Controllers
@@ -11,8 +13,23 @@ namespace WebClient.Controllers
     /// <summary>
     /// Home controller
     /// </summary>
+    [Authorize]
     public class HomeController : Controller
     {
+        /// <summary>
+        /// N Logger
+        /// </summary>
+        private ILogger logger;
+
+        /// <summary>
+        /// Home controller
+        /// </summary>
+        /// <param name="logger">The logger</param>
+        public HomeController(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         /// <summary>
         /// Action: Home/
         /// </summary>
