@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebClient", "WebClient\WebC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebClient.Services", "WebClient.Services\WebClient.Services.csproj", "{C6F5824B-FC24-480C-B53C-662C17D46758}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient.Repositories", "WebClient.Repositories\WebClient.Repositories.csproj", "{002D9A1B-A31B-4979-B459-FEE9B2B0CB18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebClient.Core", "WebClient.Core\WebClient.Core.csproj", "{BCBEF740-F823-4142-802F-A5C71644BAED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{C6F5824B-FC24-480C-B53C-662C17D46758}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6F5824B-FC24-480C-B53C-662C17D46758}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6F5824B-FC24-480C-B53C-662C17D46758}.Release|Any CPU.Build.0 = Release|Any CPU
+		{002D9A1B-A31B-4979-B459-FEE9B2B0CB18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{002D9A1B-A31B-4979-B459-FEE9B2B0CB18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{002D9A1B-A31B-4979-B459-FEE9B2B0CB18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{002D9A1B-A31B-4979-B459-FEE9B2B0CB18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCBEF740-F823-4142-802F-A5C71644BAED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCBEF740-F823-4142-802F-A5C71644BAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCBEF740-F823-4142-802F-A5C71644BAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCBEF740-F823-4142-802F-A5C71644BAED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

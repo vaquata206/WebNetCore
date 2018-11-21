@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using WebClient.Repositories.Interfaces;
+using WebClient.Services.Interfaces;
+
+namespace WebClient.Services.Implements
+{
+    public class AccountService: IAccountService
+    {
+        /// <summary>
+        /// account repository
+        /// </summary>
+        private IAccountRepository account; 
+
+        /// <summary>
+        /// A contrustor
+        /// </summary>
+        /// <param name="account"></param>
+        public AccountService(IAccountRepository account)
+        {
+            this.account = account;
+        }
+
+        /// <summary>
+        /// Authenticate the user
+        /// </summary>
+        /// <param name="username">The username of account</param>
+        /// <param name="password">The user's password</param>
+        public async Task<string> LoginAsync(string username, string password)
+        {
+            var token =  await this.account.LoginAsync(username, password);
+
+            return token;
+        }
+    }
+}

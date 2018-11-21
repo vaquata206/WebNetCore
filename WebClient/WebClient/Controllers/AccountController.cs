@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using WebClient.Models;
+using WebClient.Services.Interfaces;
 
 namespace WebClient.Controllers
 {
@@ -12,6 +16,20 @@ namespace WebClient.Controllers
     /// </summary>
     public class AccountController : Controller
     {
+        /// <summary>
+        /// account service
+        /// </summary>
+        private IAccountService accountService;
+
+        /// <summary>
+        /// A contrustor
+        /// </summary>
+        /// <param name="accountService">account service</param>
+        public AccountController(IAccountService accountService)
+        {
+            this.accountService = accountService;
+        }
+
         /// <summary>
         /// Action login
         /// </summary>
@@ -28,9 +46,50 @@ namespace WebClient.Controllers
         /// <param name="login">Login info</param>
         /// <returns>Redirect to home page</returns>
         [HttpPost("/login")]
-        public IActionResult Login(LoginViewModel login)
+        public async Task<IActionResult> LoginAsync(LoginViewModel login)
         {
-            return this.Redirect("/");
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.MessageError = "Username or password is wrong";
+                    return this.View("index");
+                }
+
+                var token = await this.accountService.LoginAsync(login.Username, login.Password);
+
+                if (string.IsNullOrEmpty(token))
+                {
+                    ViewBag.MessageError = "Username or password is wrong";
+                    return this.View("index");
+                }
+
+                List<Claim> claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, login.Username),
+                    new Claim("token", token)
+                };
+
+                // create identity
+                ClaimsIdentity identity = new ClaimsIdentity(claims, "cookie");
+
+                // create principal
+                ClaimsPrincipal principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(
+                        scheme: CookieAuthenticationDefaults.AuthenticationScheme,
+                        principal: principal,
+                        properties: new AuthenticationProperties
+                        {
+                        // IsPersistent = true, // for 'remember me' feature
+                        ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
+                        });
+                return this.Redirect("/");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

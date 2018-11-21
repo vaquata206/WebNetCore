@@ -12,6 +12,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebClient.Core;
+using WebClient.Repositories.Implements;
+using WebClient.Repositories.Interfaces;
+using WebClient.Services.Implements;
+using WebClient.Services.Interfaces;
 
 namespace WebClient
 {
@@ -32,6 +37,8 @@ namespace WebClient
                 .AddJsonFile(string.Format("appsettings.{0}.json", env.EnvironmentName), optional: true)
                 .AddEnvironmentVariables();
             this.Configuration = builder.Build();
+
+            WebConfig.ApiSystemUrl = this.Configuration.GetSection("ApiSystem").Value;
         }
 
         /// <summary>
@@ -72,6 +79,9 @@ namespace WebClient
             var builder = new ContainerBuilder();
 
             builder.Populate(services);
+            builder.RegisterType<AccountService>().As<IAccountService>();
+            builder.RegisterType<AccountRepository>().As<IAccountRepository>();
+            builder.Register(c => this.Configuration).As<IConfigurationRoot>();
             builder.Register(c => logger).As<NLog.ILogger>().SingleInstance();
             this.ApplicationContainer = builder.Build();
 
