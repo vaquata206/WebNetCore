@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using WebClient.Repositories.Interfaces;
 using WebClient.Services.Interfaces;
 
 namespace WebClient.Services.Implements
 {
+    /// <summary>
+    /// Account service
+    /// </summary>
     public class AccountService: IAccountService
     {
         /// <summary>
@@ -16,7 +15,7 @@ namespace WebClient.Services.Implements
         private IAccountRepository account; 
 
         /// <summary>
-        /// A contrustor
+        /// A constructor
         /// </summary>
         /// <param name="account"></param>
         public AccountService(IAccountRepository account)
@@ -25,7 +24,7 @@ namespace WebClient.Services.Implements
         }
 
         /// <summary>
-        /// Authenticate the user
+        /// Login the user
         /// </summary>
         /// <param name="username">The username of account</param>
         /// <param name="password">The user's password</param>

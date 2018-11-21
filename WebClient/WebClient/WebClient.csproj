@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WebClient.Core\WebClient.Core.csproj" />
     <ProjectReference Include="..\WebClient.Services\WebClient.Services.csproj" />
   </ItemGroup>
 

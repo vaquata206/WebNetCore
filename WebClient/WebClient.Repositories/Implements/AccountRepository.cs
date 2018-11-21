@@ -1,29 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using System.Threading.Tasks;
 using Newtonsoft.Json;
-using WebClient.Core;
 using WebClient.Core.Helper;
-using WebClient.Repositories.Helper;
 using WebClient.Repositories.Interfaces;
 
 namespace WebClient.Repositories.Implements
 {
+    /// <summary>
+    /// Account repository
+    /// </summary>
     public class AccountRepository : IAccountRepository
     {
+        /// <summary>
+        /// Http helper
+        /// </summary>
         private HttpHelper httpHelper;
+
+        /// <summary>
+        /// A constructor
+        /// </summary>
         public AccountRepository()
         {
             httpHelper = new HttpHelper();
         }
 
+        /// <summary>
+        /// Login the user
+        /// </summary>
+        /// <param name="username">The usename</param>
+        /// <param name="password">The password</param>
+        /// <returns>Access token</returns>
         public async Task<string> LoginAsync(string username, string password)
         {
             var token = string.Empty;
 
+            // Login to another server
             var response = await httpHelper.PostAsync(JsonConvert.SerializeObject(new
             {
                 username = username,
