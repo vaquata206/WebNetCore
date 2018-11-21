@@ -1,4 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using WebClient.Core.Entities;
 using WebClient.Repositories.Interfaces;
 using WebClient.Services.Interfaces;
 
@@ -12,15 +17,38 @@ namespace WebClient.Services.Implements
         /// <summary>
         /// account repository
         /// </summary>
-        private IAccountRepository account; 
+        private IAccountRepository account;
+
+        /// <summary>
+        /// A http context
+        /// </summary>
+        private IHttpContextAccessor httpContextAccessor;
 
         /// <summary>
         /// A constructor
         /// </summary>
         /// <param name="account"></param>
-        public AccountService(IAccountRepository account)
+        public AccountService(IAccountRepository account, IHttpContextAccessor httpContextAccessor)
         {
             this.account = account;
+            this.httpContextAccessor = httpContextAccessor;
+        }
+
+        public User CurrentUser {
+            get
+            {
+                var claims = httpContextAccessor.HttpContext.User.Claims;
+                if (claims == null || claims.Count() == 0)
+                {
+                    return null;
+                }
+
+                return new User
+                {
+                    Username = claims.Where(x => x.Type == ClaimTypes.NameIdentifier).Select(x => x.Value).SingleOrDefault(),
+                    Token = claims.Where(x => x.Type == "token").Select(x => x.Value).SingleOrDefault()
+                };
+            }
         }
 
         /// <summary>
@@ -31,8 +59,9 @@ namespace WebClient.Services.Implements
         public async Task<string> LoginAsync(string username, string password)
         {
             var token =  await this.account.LoginAsync(username, password);
-
+            
             return token;
         }
+
     }
 }

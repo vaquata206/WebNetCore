@@ -74,11 +74,14 @@ namespace WebClient
                 };
             });
 
+            services.AddHttpContextAccessor();
+
             var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
             var builder = new ContainerBuilder();
 
             builder.Populate(services);
+
             // Resgister Services
             builder.RegisterType<AccountService>().As<IAccountService>();
 

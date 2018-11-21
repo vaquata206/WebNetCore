@@ -36,6 +36,7 @@ namespace WebClient.Controllers
         /// <returns>Index page</returns>
         public IActionResult Index()
         {
+            // var a = this.TempData["StatusMessage"];
             return this.View();
         }
 

@@ -75,7 +75,7 @@ namespace WebClient.Controllers
 
                 List<Claim> claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, login.Username),
+                    new Claim(ClaimTypes.NameIdentifier, login.Username),
                     new Claim("token", token)
                 };
 
@@ -93,6 +93,8 @@ namespace WebClient.Controllers
                         // IsPersistent = true, // for 'remember me' feature
                         ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
                         });
+
+                this.TempData["StatusMessage"] = "Đăng nhập thành công";
                 return this.Redirect("/");
             }
             catch (Exception ex)
