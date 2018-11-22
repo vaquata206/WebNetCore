@@ -42,9 +42,18 @@
         </a>
     </div>
         -->
-    <span>@ViewBag.MessageError</span>
+    @{
+        if (!string.IsNullOrEmpty(ViewBag.MessageError))
+        {
+            <div class="text-danger validation-summary-errors">
+                <ul>
+                    <li>@ViewBag.MessageError</li>
+                </ul>
+            </div>
+        }
+    }
     <!-- /.social-auth-links -->
-    <a href="#">I forgot my password</a><br>
-    <a href="register.html" class="text-center">Register a new membership</a>
+    @*<a href="#">I forgot my password</a><br>
+    <a href="register.html" class="text-center">Register a new membership</a>*@
 </div>
 <!-- /.login-box-body -->

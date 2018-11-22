@@ -1,7 +1,10 @@
-﻿using System;
+﻿using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using WebClient.Core.Helper;
+using Dapper;
+using Oracle.ManagedDataAccess.Client;
+using WebClient.Core;
+using WebClient.Core.Entities;
 using WebClient.Repositories.Interfaces;
 
 namespace WebClient.Repositories.Implements
@@ -12,41 +15,27 @@ namespace WebClient.Repositories.Implements
     public class AccountRepository : IAccountRepository
     {
         /// <summary>
-        /// Http helper
-        /// </summary>
-        private HttpHelper httpHelper;
-
-        /// <summary>
-        /// A constructor
-        /// </summary>
-        public AccountRepository()
-        {
-            httpHelper = new HttpHelper();
-        }
-
-        /// <summary>
         /// Login the user
         /// </summary>
         /// <param name="username">The usename</param>
         /// <param name="password">The password</param>
         /// <returns>Access token</returns>
-        public async Task<string> LoginAsync(string username, string password)
+        public async Task<Account> LoginAsync(string username, string password)
         {
             var token = string.Empty;
+            Account account = null;
 
-            // Login to another server
-            var response = await httpHelper.PostAsync(JsonConvert.SerializeObject(new
+            using (var dbConnection = new OracleConnection(WebConfig.ConnectionString))
             {
-                username = username,
-                password = password
-            }), "login");
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                token = "Bearer " + (await response.Content.ReadAsStringAsync()).Replace("\"","");
+                var dyParam = new OracleDynamicParameters();
+                dyParam.Add("P_USERNAME", OracleDbType.Varchar2, ParameterDirection.Input, username);
+                dyParam.Add("RSOUT", OracleDbType.RefCursor, ParameterDirection.Output);
+                var query = "QTRR_ADMIN.GET_ACCOUNT";
+                var obj = await SqlMapper.QueryAsync<Account>(dbConnection, query, param: dyParam, commandType: CommandType.StoredProcedure);
+                account = (obj != null || obj.Count() == 0) ? obj.FirstOrDefault() : null;
             }
 
-            return token;
+            return account;
         }
     }
 }

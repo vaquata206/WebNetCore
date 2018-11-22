@@ -16,7 +16,7 @@ namespace WebClient.Services.Interfaces
         /// </summary>
         /// <param name="username">The username of account</param>
         /// <param name="password">The user's password</param>
-        Task<string> LoginAsync(string username, string password);
+        Task<Account> LoginAsync(string username, string password);
 
         /// <summary>
         /// Get modules

@@ -37,6 +37,7 @@ namespace WebClient
             this.Configuration = builder.Build();
 
             WebConfig.ApiSystemUrl = this.Configuration.GetSection("ApiSystem").Value;
+            WebConfig.ConnectionString = this.Configuration.GetSection("ConnectionString").Value;
         }
 
         /// <summary>

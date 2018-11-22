@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
 using WebClient.Core.Entities;
+using WebClient.Extensions;
 using WebClient.Models;
 using WebClient.Services.Interfaces;
 
@@ -30,14 +31,21 @@ namespace WebClient.Controllers
         private ILogger logger;
 
         /// <summary>
+        /// Auth helper
+        /// </summary>
+        private AuthHelper authHelper;
+
+        /// <summary>
         /// A contrustor
         /// </summary>
         /// <param name="accountService">account service</param>
         /// <param name="logger">The logger</param>
-        public AccountController(IAccountService accountService, ILogger logger)
+        /// <param name="authHelper">Auth helper</param>
+        public AccountController(IAccountService accountService, ILogger logger, AuthHelper authHelper)
         {
             this.accountService = accountService;
             this.logger = logger;
+            this.authHelper = authHelper;
         }
 
         /// <summary>
@@ -62,38 +70,21 @@ namespace WebClient.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    ViewBag.MessageError = "Username or password is wrong";
+                    var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    ViewBag.MessageError = message;
+                    return this.View("index");
+                }
+                
+                var account = await this.accountService.LoginAsync(login.Username, login.Password);
+
+                if (account == null || string.IsNullOrEmpty(account.Ma_NhanVien))
+                {
+                    ViewBag.MessageError = "Tên đăng nhập hoặc mật khẩu không đúng";
                     return this.View("index");
                 }
 
-                var token = await this.accountService.LoginAsync(login.Username, login.Password);
-
-                if (string.IsNullOrEmpty(token))
-                {
-                    ViewBag.MessageError = "Username or password is wrong";
-                    return this.View("index");
-                }
-
-                List<Claim> claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.NameIdentifier, login.Username),
-                    new Claim("token", token)
-                };
-
-                // create identity
-                ClaimsIdentity identity = new ClaimsIdentity(claims, "cookie");
-
-                // create principal
-                ClaimsPrincipal principal = new ClaimsPrincipal(identity);
-
-                await HttpContext.SignInAsync(
-                        scheme: CookieAuthenticationDefaults.AuthenticationScheme,
-                        principal: principal,
-                        properties: new AuthenticationProperties
-                        {
-                        // IsPersistent = true, // for 'remember me' feature
-                        ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
-                        });
+                // Login to cookie authentication
+                await this.authHelper.LoginAsync(account);
 
                 this.TempData["StatusMessage"] = "Đăng nhập thành công";
                 return this.Redirect("/");
@@ -113,8 +104,17 @@ namespace WebClient.Controllers
         [HttpGet("/logout")]
         public async Task<IActionResult> LogoutAsync()
         {
-            await HttpContext.SignOutAsync();
-            return this.Redirect("/login");
+            try
+            {
+                // Logout
+                await this.authHelper.LogoutAsync();
+                return this.Redirect("/login");
+            }
+            catch (Exception ex)
+            {
+                this.logger.Error(ex);
+                throw ex;
+            }
         }
     }
 }
