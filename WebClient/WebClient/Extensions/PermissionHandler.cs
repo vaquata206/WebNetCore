@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
-using NLog;
-using WebClient.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace WebClient.Extensions
 {
@@ -22,14 +19,14 @@ namespace WebClient.Extensions
         /// <summary>
         /// The logger
         /// </summary>
-        private ILogger logger;
+        private ILogger<AuthHelper> logger;
 
         /// <summary>
         /// A constructor
         /// </summary>
         /// <param name="auth">Account service</param>
         /// <param name="logger">The logger</param>
-        public PermissionHandler(AuthHelper auth, ILogger logger)
+        public PermissionHandler(AuthHelper auth, ILogger<AuthHelper> logger)
         {
             this.auth = auth;
             this.logger = logger;
@@ -60,7 +57,7 @@ namespace WebClient.Extensions
             }
             catch (Exception ex)
             {
-                this.logger.Error(ex);
+                this.logger.LogError(ex.Message);
             }
 
             return Task.CompletedTask;

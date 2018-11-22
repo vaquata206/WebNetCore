@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NLog;
+using Microsoft.Extensions.Logging;
 using WebClient.Extensions;
 using WebClient.Models;
 
@@ -18,15 +14,15 @@ namespace WebClient.Controllers
     public class HomeController : Controller
     {
         /// <summary>
-        /// N Logger
+        /// Logger Homecontroller
         /// </summary>
-        private ILogger logger;
+        private ILogger<HomeController> logger;
 
         /// <summary>
         /// Home controller
         /// </summary>
         /// <param name="logger">The logger</param>
-        public HomeController(ILogger logger)
+        public HomeController(ILogger<HomeController> logger)
         {
             this.logger = logger;
         }
@@ -72,19 +68,6 @@ namespace WebClient.Controllers
         public IActionResult Privacy()
         {
             return this.View();
-        }
-
-        /// <summary>
-        /// Action: Home/error
-        /// </summary>
-        /// <returns>Error page</returns>
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return this.View(new ErrorViewModel
-            {
-                RequestId = (Activity.Current == null) ? HttpContext.TraceIdentifier : Activity.Current.Id
-            });
         }
     }
 }

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NLog;
-using WebClient.Core.Entities;
+using Microsoft.Extensions.Logging;
 using WebClient.Extensions;
 using WebClient.Models;
 using WebClient.Services.Interfaces;
@@ -28,7 +23,7 @@ namespace WebClient.Controllers
         /// <summary>
         /// The logger
         /// </summary>
-        private ILogger logger;
+        private ILogger<AccountController> logger;
 
         /// <summary>
         /// Auth helper
@@ -41,7 +36,7 @@ namespace WebClient.Controllers
         /// <param name="accountService">account service</param>
         /// <param name="logger">The logger</param>
         /// <param name="authHelper">Auth helper</param>
-        public AccountController(IAccountService accountService, ILogger logger, AuthHelper authHelper)
+        public AccountController(IAccountService accountService, ILogger<AccountController> logger, AuthHelper authHelper)
         {
             this.accountService = accountService;
             this.logger = logger;
@@ -91,7 +86,7 @@ namespace WebClient.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.Error(ex);
+                this.logger.LogError(ex.Message);
                 throw ex;
             }
         }
@@ -112,7 +107,7 @@ namespace WebClient.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.Error(ex);
+                this.logger.LogError(ex.Message);
                 throw ex;
             }
         }

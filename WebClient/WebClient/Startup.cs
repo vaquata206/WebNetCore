@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using NLog.Web;
 using WebClient.Core;
 using WebClient.Extensions;
 using WebClient.Repositories.Implements;
@@ -80,8 +83,6 @@ namespace WebClient
 
             services.AddHttpContextAccessor();
 
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
-
             var builder = new ContainerBuilder();
 
             builder.Populate(services);
@@ -91,8 +92,6 @@ namespace WebClient
 
             // Register Repositories
             builder.RegisterType<AccountRepository>().As<IAccountRepository>();
-
-            builder.Register(c => logger).As<NLog.ILogger>().SingleInstance();
             builder.RegisterType<AuthHelper>().SingleInstance();
 
             this.ApplicationContainer = builder.Build();
@@ -106,8 +105,12 @@ namespace WebClient
         /// </summary>
         /// <param name="app">Application builder</param>
         /// <param name="env">Hostring environment</param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        /// <param name="loggerFactory">Logger factory</param>
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            env.ConfigureNLog("nlog.config");
+            loggerFactory.AddNLog();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
