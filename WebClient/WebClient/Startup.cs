@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebClient.Core;
+using WebClient.Extensions;
 using WebClient.Repositories.Implements;
 using WebClient.Repositories.Interfaces;
 using WebClient.Services.Implements;
@@ -60,19 +64,20 @@ namespace WebClient
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            var assembly = Assembly.GetExecutingAssembly();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
                 // Redirect to path when unathorized. For example "/login"
                 options.LoginPath = "/login";
-                options.Events = new CookieAuthenticationEvents
-                {
-                    OnSignedIn = context =>
-                    {
-                        var a = context.HttpContext.Request.Method;
-                        return Task.CompletedTask;
-                    }
-                };
             });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(PermissionRequirement.PermissionPolicies.Permission, policy => policy.Requirements.Add(new PermissionRequirement()));
+                options.AddPolicy(PermissionRequirement.PermissionPolicies.PermissionUri, policy => policy.Requirements.Add(new PermissionRequirement { IsModelUri = true }));
+            });
+            services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 
             services.AddHttpContextAccessor();
 

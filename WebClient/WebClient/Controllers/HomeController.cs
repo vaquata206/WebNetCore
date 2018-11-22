@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using WebClient.Extensions;
 using WebClient.Models;
 
 namespace WebClient.Controllers
@@ -44,6 +45,7 @@ namespace WebClient.Controllers
         /// Action: Home/about
         /// </summary>
         /// <returns>About page</returns>
+        [Permission(true)]
         public IActionResult About()
         {
             this.ViewData["Message"] = "Your application description page.";
@@ -55,6 +57,7 @@ namespace WebClient.Controllers
         /// Action: Home/contact
         /// </summary>
         /// <returns>Contact page</returns>
+        [Permission]
         public IActionResult Contact()
         {
             this.ViewData["Message"] = "Your contact page.";
