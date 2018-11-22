@@ -24,11 +24,9 @@ namespace WebClient.Services.Interfaces
         User CurrentUser { get; }
 
         /// <summary>
-        /// Check user permission if the current user is allowed working with a action mapping the path
+        /// Get modules
         /// </summary>
-        /// <param name="path">The path of action</param>
-        /// <param name="isModeUri">True: path is a uri. False: path is [controller]/[action]</param>
-        /// <returns>return true if the current user is allowed</returns>
-        Task<bool> CheckUserPermission(string path, bool isModelUri);
+        /// <returns>List of module</returns>
+        IEnumerable<string> GetModules();
     }
 }

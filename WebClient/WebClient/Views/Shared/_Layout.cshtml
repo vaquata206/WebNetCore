@@ -1,7 +1,7 @@
-﻿@inject WebClient.Services.Interfaces.IAccountService accountService
+﻿@inject WebClient.Extensions.AuthHelper auth
 
 @{ 
-    var currentUser = accountService.CurrentUser;
+    var currentUser = auth.CurrentUser;
 }
 <!DOCTYPE html>
 <html>

@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -79,6 +73,10 @@ namespace WebClient
             });
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 
+            // Add session
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddHttpContextAccessor();
 
             var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
@@ -94,6 +92,8 @@ namespace WebClient
             builder.RegisterType<AccountRepository>().As<IAccountRepository>();
 
             builder.Register(c => logger).As<NLog.ILogger>().SingleInstance();
+            builder.RegisterType<AuthHelper>().SingleInstance();
+
             this.ApplicationContainer = builder.Build();
 
             // Create the IServiceProvider based on the container.
@@ -120,9 +120,8 @@ namespace WebClient
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseSession();
             app.UseAuthentication();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

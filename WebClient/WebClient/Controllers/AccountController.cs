@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NLog;
+using WebClient.Core.Entities;
 using WebClient.Models;
 using WebClient.Services.Interfaces;
 

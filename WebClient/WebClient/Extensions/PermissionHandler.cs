@@ -17,7 +17,7 @@ namespace WebClient.Extensions
         /// <summary>
         /// Account service
         /// </summary>
-        private IAccountService accountService;
+        private AuthHelper auth;
 
         /// <summary>
         /// The logger
@@ -27,11 +27,11 @@ namespace WebClient.Extensions
         /// <summary>
         /// A constructor
         /// </summary>
-        /// <param name="accountService">Account service</param>
+        /// <param name="auth">Account service</param>
         /// <param name="logger">The logger</param>
-        public PermissionHandler(IAccountService accountService, ILogger logger)
+        public PermissionHandler(AuthHelper auth, ILogger logger)
         {
-            this.accountService = accountService;
+            this.auth = auth;
             this.logger = logger;
         }
 
@@ -53,7 +53,7 @@ namespace WebClient.Extensions
                     filterContext.HttpContext.Request.Path.ToString() : 
                     filterContext.RouteData.Values["controller"] + "/" + filterContext.RouteData.Values["action"];
 
-                if (this.accountService.CheckUserPermission(path, requirement.IsModelUri).Result)
+                if (this.auth.CheckUserPermission(path, requirement.IsModelUri))
                 {
                     context.Succeed(requirement);
                 }
