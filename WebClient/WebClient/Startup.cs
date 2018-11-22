@@ -113,7 +113,9 @@ namespace WebClient
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseStatusCodePagesWithReExecute("/error/{0}");
+
+                // app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
