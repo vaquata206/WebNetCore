@@ -1,9 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using WebClient.Core.Entities;
 using WebClient.Repositories.Interfaces;
 using WebClient.Services.Interfaces;
 
@@ -20,35 +16,12 @@ namespace WebClient.Services.Implements
         private IAccountRepository account;
 
         /// <summary>
-        /// A http context
-        /// </summary>
-        private IHttpContextAccessor httpContextAccessor;
-
-        /// <summary>
         /// A constructor
         /// </summary>
         /// <param name="account"></param>
-        public AccountService(IAccountRepository account, IHttpContextAccessor httpContextAccessor)
+        public AccountService(IAccountRepository account)
         {
             this.account = account;
-            this.httpContextAccessor = httpContextAccessor;
-        }
-
-        public User CurrentUser {
-            get
-            {
-                var claims = httpContextAccessor.HttpContext.User.Claims;
-                if (claims == null || claims.Count() == 0)
-                {
-                    return null;
-                }
-
-                return new User
-                {
-                    Username = claims.Where(x => x.Type == ClaimTypes.NameIdentifier).Select(x => x.Value).SingleOrDefault(),
-                    Token = claims.Where(x => x.Type == "token").Select(x => x.Value).SingleOrDefault()
-                };
-            }
         }
 
         /// <summary>

@@ -19,11 +19,6 @@ namespace WebClient.Services.Interfaces
         Task<string> LoginAsync(string username, string password);
 
         /// <summary>
-        /// Get the current user
-        /// </summary>
-        User CurrentUser { get; }
-
-        /// <summary>
         /// Get modules
         /// </summary>
         /// <returns>List of module</returns>
