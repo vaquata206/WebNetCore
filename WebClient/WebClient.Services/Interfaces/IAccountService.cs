@@ -21,7 +21,8 @@ namespace WebClient.Services.Interfaces
         /// <summary>
         /// Get modules
         /// </summary>
+        /// <param name="idNhanVien">The user's id</param>
         /// <returns>List of module</returns>
-        IEnumerable<string> GetModules();
+        Task<IEnumerable<Menu>> GetModulesAsync(int idNhanVien);
     }
 }

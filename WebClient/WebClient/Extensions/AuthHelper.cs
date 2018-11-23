@@ -45,16 +45,16 @@ namespace WebClient.Extensions
         /// <summary>
         /// Get modules
         /// </summary>
-        public IEnumerable<string> Modules
+        public IEnumerable<Menu> Modules
         {
             get
             {
-                IEnumerable<string> modules = this.httpContextAccessor.HttpContext.Session.GetObject<IEnumerable<string>>(SessionKeyModules);
+                IEnumerable<Menu> modules = this.httpContextAccessor.HttpContext.Session.GetObject<IEnumerable<Menu>>(SessionKeyModules);
 
                 if (modules == null || modules.Count() == 0)
                 {
                     // Get modules from the service
-                    modules = this.accountService.GetModules();
+                    modules = this.accountService.GetModulesAsync(this.CurrentUser.Id_NhanVien).Result;
 
                     // Store modules to session
                     this.httpContextAccessor.HttpContext.Session.SetObject(SessionKeyModules, modules);
@@ -139,9 +139,10 @@ namespace WebClient.Extensions
         /// <returns>return true if the current user is allowed</returns>
         public bool CheckUserPermission(string path, bool isModeUri)
         {
-            // HACK
             var pathUp = path.Trim('/').ToUpper();
-            return this.Modules.Any(x => x.ToUpper() == pathUp);
+            return this.Modules.Any(x => isModeUri ? 
+            x.Url.Trim('/').ToUpper().Equals(path) : 
+            (x.Controler_Name + "/" + x.Action_Name).ToUpper().Equals(path));
         }
     }
 }

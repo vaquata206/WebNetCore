@@ -38,6 +38,16 @@ namespace WebClient.Controllers
         }
 
         /// <summary>
+        /// Test function
+        /// </summary>
+        /// <returns>khong biet</returns>
+        [HttpPost]
+        public string TestTable()
+        {
+            return "aaaa";
+        }
+
+        /// <summary>
         /// Action: Home/about
         /// </summary>
         /// <returns>About page</returns>

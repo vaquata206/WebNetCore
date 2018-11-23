@@ -40,10 +40,11 @@ namespace WebClient.Services.Implements
         /// <summary>
         /// Get modules
         /// </summary>
+        /// <param name="idNhanVien">The user's id</param>
         /// <returns>List of module</returns>
-        public IEnumerable<string> GetModules()
+        public async Task<IEnumerable<Menu>> GetModulesAsync(int idNhanVien)
         {
-            return new List<string> { "Home/About" };
+            return await this.account.GetModules(idNhanVien);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -22,7 +24,6 @@ namespace WebClient.Repositories.Implements
         /// <returns>Access token</returns>
         public async Task<Account> LoginAsync(string username, string password)
         {
-            var token = string.Empty;
             Account account = null;
 
             using (var dbConnection = new OracleConnection(WebConfig.ConnectionString))
@@ -36,6 +37,32 @@ namespace WebClient.Repositories.Implements
             }
 
             return account;
+        }
+
+        /// <summary>
+        /// Get modules that the user is allowed
+        /// </summary>
+        /// <param name="idNhanVien">The user's id</param>
+        /// <returns>A task</returns>
+        public async Task<IEnumerable<Menu>> GetModules(int idNhanVien)
+        {
+            try
+            {
+                using (IDbConnection conn = new OracleConnection(WebConfig.ConnectionString))
+                {
+                    var dyParam = new OracleDynamicParameters();
+                    dyParam.Add("P_ID_NHANVIEN", OracleDbType.Varchar2, ParameterDirection.Input, idNhanVien.ToString());
+                    dyParam.Add("RSOUT", OracleDbType.RefCursor, ParameterDirection.Output);
+                    var query = "QTRR_ADMIN.GET_MENU";
+
+                    IEnumerable<Menu> obj = await SqlMapper.QueryAsync<Menu>(conn, query, param: dyParam, commandType: CommandType.StoredProcedure);
+                    return obj;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

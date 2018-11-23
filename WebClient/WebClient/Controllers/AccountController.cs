@@ -111,5 +111,14 @@ namespace WebClient.Controllers
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Action profile
+        /// </summary>
+        /// <returns>Profile page</returns>
+        public IActionResult Profile()
+        {
+            return this.View(this.authHelper.CurrentUser);
+        }
     }
 }

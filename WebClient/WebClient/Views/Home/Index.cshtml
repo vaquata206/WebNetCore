@@ -3,3 +3,15 @@
 }
 
 <div>addasd</div>
+@section Scripts{ 
+    <script>
+        $(function () {
+            $.ajax({
+                url: "Home/Test",
+                method: "GET"
+            }).done(function (data) {
+                console.log("asdasd " + data);
+            });
+        });
+    </script>
+}

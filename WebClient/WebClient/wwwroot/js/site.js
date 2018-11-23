@@ -1,4 +1,30 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿// Show loading overlay the element
+function showLoading($element) {
+    if (!$element) {
+        $element = $("body");
+    } else {
+        $element = $($element);
+    }
 
-// Write your JavaScript code.
+    if (!$element.hasClass("box"))
+    {
+        $element.addClass("box");
+    }
+
+    if ($element.children(".overlay").length === 0)
+    {
+        $element.append('<div class="overlay"><i class="fa fa-spinner fa-spin"></i></div>');
+    }
+}
+
+// hide loading overlay the element
+function hideLoading($element) {
+    $element = $($element);
+    if ($element.hasClass("box")) {
+        $element.removeClass("box");
+    }
+
+    if ($element.children(".overlay").length === 0) {
+        $element.children(".overlay").remove();
+    }
+}
