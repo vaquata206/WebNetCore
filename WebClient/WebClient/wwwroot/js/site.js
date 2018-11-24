@@ -28,3 +28,13 @@ function hideLoading($element) {
         $element.children(".overlay").remove();
     }
 }
+
+$(function () {
+    var $alert = $(".alert-dismissible#statusMessage");
+    if ($alert.length > 0) {
+        console.log("asdasd");
+        setTimeout(function () {
+            $alert.remove();
+        }, $alert.data("auto-dismiss"));
+    }
+});

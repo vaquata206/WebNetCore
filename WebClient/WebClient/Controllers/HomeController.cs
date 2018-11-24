@@ -1,7 +1,13 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using WebClient.Core.Entities;
+using WebClient.Core.Paging;
 using WebClient.Extensions;
 using WebClient.Models;
 
@@ -40,11 +46,42 @@ namespace WebClient.Controllers
         /// <summary>
         /// Test function
         /// </summary>
+        /// <param name="request">paging request</param>
         /// <returns>khong biet</returns>
         [HttpPost]
-        public string TestTable()
+        public IActionResult TestTable(PagingRequest request)
         {
-            return "aaaa";
+            var list = this.Datatest();
+            var data = list.Skip(request.Start).Take(request.Length).ToList();
+
+            return this.Json(new PagingResponse<Account>()
+            {
+                Data = data,
+                Draw = request.Draw,
+                RecordsFiltered = list.Count(),
+                RecordsTotal = list.Count(),
+            });
+        }
+
+        /// <summary>
+        /// Du lieu test
+        /// </summary>
+        /// <returns>du lieu</returns>
+        public IEnumerable<Account> Datatest()
+        {
+            var list = new List<Account>();
+            for (var i = 0; i < 1000; i++)
+            {
+                list.Add(new Account
+                {
+                    Ho_ten = "Account " + i,
+                    Id_NhanVien = i,
+                    Ma_NhanVien = "Ma" + i,
+                    Ten_DangNhap = "Ten" + i
+                });
+            }
+
+            return list;
         }
 
         /// <summary>

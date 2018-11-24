@@ -26,11 +26,11 @@ $(function () {
         $form.validate();
         $form.submit(function (event) {
             var submitNoValid = $form.attr("submit-no-valid");
+            
             if (!submitNoValid && !$form.valid()) {
                 event.preventDefault();
             }
-            
-            if ($form.attr("show-loader")) {
+            else if ($form.attr("show-loader")) {
                 showLoading($form.parent());
             }
         });

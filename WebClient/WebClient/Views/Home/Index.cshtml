@@ -2,16 +2,88 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div>addasd</div>
-@section Scripts{ 
+<section class="content-header">
+    <h1>
+        Data Tables
+        <small>advanced tables</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">Tables</a></li>
+        <li class="active">Data tables</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Hover Data Table</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Id_NhanVien</th>
+                                <th>Ma NhanVien</th>
+                                <th>Ten DangNhap</th>
+                                <th>Ho ten</th>
+                                <th>Ho ten</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+
+
+
+@section Scripts{
     <script>
         $(function () {
-            $.ajax({
-                url: "Home/Test",
-                method: "GET"
-            }).done(function (data) {
-                console.log("asdasd " + data);
-            });
+            //$.ajax({
+            //    url: "Home/Test",
+            //    method: "GET"
+            //}).done(function (data) {
+            //    console.log("asdasd " + data);
+            //});
+            $("#example1").DataTable({
+                'paging': true,
+                'lengthChange': false,
+                'searching': false,
+                'ordering': true,
+                'info': true,
+                'autoWidth': false,
+                "processing": true, // for show progress bar  
+                "serverSide": true,
+                "ajax": {
+                    "url": "/Home/TestTable",
+                    "type": "POST",
+                },
+                "columnDefs": [{
+                    "targets": -1,
+                    "data": null,
+                    "defaultContent": "<button>Click!</button>"
+                }],
+                "columns": [
+                    {
+                        "data": "id_NhanVien"
+                    },
+                    {
+                        "data": "ma_NhanVien"
+                    },
+                    { "data": "ten_DangNhap" },
+                    { "data": "ho_ten" },
+                    { "data": null }
+                ]
+            })
         });
     </script>
 }
